@@ -1,5 +1,38 @@
-# Vue 3 + Vite
+# Tinker Laravel Desktop App
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+this is an app for tinker laravel, you can run your laravel code from this desktop app
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Features
+- select php path
+- select laravel directory
+- run your code like in tinker
+- run your artisan command
+
+built using:
+
+- tauri
+- rust
+- vue
+- vite
+
+## Development
+
+```bash
+bun install
+```
+
+```bash
+bun tauri dev
+```
+
+## Build
+
+```bash
+bun tauri build
+```
+
+check `target` folder for the build binary
+
+## License
+
+MIT
