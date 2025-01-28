@@ -1,6 +1,8 @@
 name: Build
 on:
   push:
+    # branches:
+    #   - dev
     tags:
       - 'v*'
   workflow_dispatch:
@@ -14,6 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         platform: [macos-latest, ubuntu-latest, windows-latest]
+        # platform: [ubuntu-latest]
         include:
           - platform: macos-latest
             targets: aarch64-apple-darwin,x86_64-apple-darwin
@@ -48,6 +51,8 @@ jobs:
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
             export PATH=\"/root/.cargo/bin:\$PATH\" && \ 
             cd src-tauri && \
+            mkdir -p target/release && \
+            chmod -R 777 target && \
             cargo build --release --target x86_64-unknown-linux-gnu"
 
       - name: Install dependencies (ubuntu only)
@@ -64,6 +69,12 @@ jobs:
 
       - name: Install frontend dependencies
         run: bun install
+
+      - name: Setup build permissions
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo mkdir -p src-tauri/target/release
+          sudo chmod -R 777 src-tauri/target
 
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
