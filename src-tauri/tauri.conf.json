@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "tinker-laravel",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "identifier": "tinker.labkita.my.id",
   "build": {
     "beforeDevCommand": "bun run dev",
@@ -12,11 +12,33 @@
   "app": {
     "windows": [
       {
-        "title": "tinker-laravel",
+        "title": "Tinker Laravel",
         "width": 800,
         "height": 600,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "url": "index.html",
+        "label": "main"
+      },
+      {
+        "title": "Settings",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "url": "settings.html",
+        "label": "settings",
+        "create": false
+      },
+      {
+        "title": "Artisan Command",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "url": "artisan.html",
+        "label": "artisan",
+        "create": false
       }
     ],
     "security": {
@@ -32,6 +54,13 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "frameworks": [],
+      "exceptionDomain": "",
+      "signingIdentity": null,
+      "entitlements": null
+    }
   }
 }

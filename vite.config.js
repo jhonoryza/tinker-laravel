@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import path from 'path';
 
 const host = process.env.TAURI_DEV_HOST;
 
@@ -26,6 +27,21 @@ export default defineConfig(async () => ({
     watch: {
       // 3. tell vite to ignore watching `src-tauri`
       ignored: ["**/src-tauri/**"],
+    },
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        settings: path.resolve(__dirname, 'settings.html'),
+        artisan: path.resolve(__dirname, 'artisan.html')
+      }
+    }
+  },
+  // Add this section
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
     },
   },
 }));

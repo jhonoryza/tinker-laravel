@@ -1,7 +1,7 @@
+use std::io::prelude::*;
 use std::process::Child;
 use std::process::Command;
 use std::process::Stdio;
-use std::io::prelude::*;
 
 #[tauri::command]
 pub fn execute_laravel_code(code: String, laravel_path: String, bin: String) -> String {
@@ -13,9 +13,9 @@ pub fn execute_laravel_code(code: String, laravel_path: String, bin: String) -> 
     let output: Child = Command::new(bin)
         .arg(&artisan_path)
         .arg("tinker")
-       	.stdin(Stdio::piped())
-		.stdout(Stdio::piped())
-		.stderr(Stdio::piped())
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
         .spawn()
         .expect("Failed to execute PHP code");
 
@@ -39,9 +39,9 @@ pub fn run_artisan_command(command: String, laravel_path: String, bin: String) -
         .current_dir(&laravel_path)
         .arg("artisan")
         .arg(&command)
-       	.stdin(Stdio::piped())
-		.stdout(Stdio::piped())
-		.stderr(Stdio::piped())
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
         .spawn()
         .expect("Failed to execute Artisan command");
 
@@ -53,6 +53,3 @@ pub fn run_artisan_command(command: String, laravel_path: String, bin: String) -
     }
     return result;
 }
-
-
-
