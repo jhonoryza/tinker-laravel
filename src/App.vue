@@ -10,6 +10,7 @@ import { keymap } from '@codemirror/view';
 import { indentWithTab } from '@codemirror/commands';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { getStore, load } from '@tauri-apps/plugin-store';
+import { message } from "@tauri-apps/plugin-dialog";
 
 const layout = ref("");
 const phpPath = ref("");
@@ -107,6 +108,12 @@ async function openArtisanWindow() {
   const artisanWindow = new WebviewWindow('artisan', {
     url: 'artisan.html',
     title: 'Artisan',
+    label: 'artisan',
+    width: 800,
+    height: 600,
+    resizable: true,
+    fullscreen: false,
+    focus: true
   });
   artisanWindow.once('tauri://error', (e) => {
     console.error('Artisan window error:', e);
@@ -117,10 +124,25 @@ async function openSettingsWindow() {
   const settingsWindow = new WebviewWindow('settings', {
     url: 'settings.html',
     title: 'Settings',
+    label: 'settings',
+    width: 800,
+    height: 600,
+    resizable: true,
+    fullscreen: false,
+    focus: true
   });
   settingsWindow.once('tauri://error', (e) => {
     console.error('Settings window error:', e);
   });
+}
+
+async function showHelp() {
+  await message(
+    `
+• Cmd/Ctrl + Enter: Play
+• Esc: Close Window`,
+    { title: 'Help', type: 'info' }
+  );
 }
 
 </script>
@@ -138,7 +160,7 @@ async function openSettingsWindow() {
           </svg>
           Play
         </button>
-        <button class="py-1 px-4 bg-lime-400 hover:bg-lime-600 rounded shadow text-slate-800 flex items-center gap-2"
+        <button class="py-1 px-4 bg-slate-600 hover:bg-slate-700 rounded shadow text-white flex items-center gap-2"
           @click="openArtisanWindow">
           <svg viewBox="0 0 50 52" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current">
             <path
@@ -146,7 +168,7 @@ async function openSettingsWindow() {
           </svg>
           Artisan
         </button>
-        <button class="py-1 px-4 bg-lime-400 hover:bg-lime-600 rounded shadow text-slate-800 flex items-center gap-2"
+        <button class="py-1 px-4 bg-slate-600 hover:bg-slate-700 rounded shadow text-white flex items-center gap-2"
           @click="openSettingsWindow">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="w-5 h-5">
@@ -155,6 +177,14 @@ async function openSettingsWindow() {
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
           </svg>
           Settings
+        </button>
+        <button @click="showHelp"
+          class="py-1 px-4 bg-slate-600 hover:bg-slate-700 rounded shadow text-white flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+          </svg>
         </button>
       </div>
     </div>

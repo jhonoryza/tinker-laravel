@@ -13,6 +13,12 @@ onMounted(async () => {
     layout.value = await store.get('layout') || "Vertical";
     phpPath.value = await store.get('phpPath') || "/usr/local/bin/php";
     laravelPath.value = await store.get('laravelPath') || "/Users/fajar/Documents/php-projects/testing/inertia-react";
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            cancel();
+        }
+    })
 })
 
 async function openLaravelDirectory() {
@@ -40,10 +46,11 @@ async function save() {
         const newMainWindow = new WebviewWindow('main', {
             url: 'index.html',
             title: 'Tinker Laravel',
+            label: "main",
+            width: 800,
+            height: 600,
             resizable: true,
             fullscreen: false,
-            url: "index.html",
-            label: "main"
         });
         newMainWindow.once('tauri://error', (e) => {
             console.error('reload main window error: ', e)
@@ -87,7 +94,7 @@ async function cancel() {
                     <input v-model="laravelPath" class="w-full py-1 px-4 text-slate-800 rounded shadow"
                         placeholder="Path to Laravel project" />
                     <button
-                        class="py-1 px-4 bg-lime-400 hover:bg-lime-600 rounded shadow text-slate-800 flex items-center gap-2"
+                        class="py-1 px-4 bg-slate-600 hover:bg-slate-700 rounded shadow text-white flex items-center gap-2"
                         @click="openLaravelDirectory">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5">
@@ -110,7 +117,7 @@ async function cancel() {
                         Save
                     </button>
                     <button @click="cancel"
-                        class="w-full py-1 px-4 bg-rose-500 hover:bg-rose-700 rounded shadow text-slate-800 flex items-center gap-2">
+                        class="w-full py-1 px-4 bg-slate-600 hover:bg-slate-700 rounded shadow text-white flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"

@@ -31,6 +31,12 @@ onMounted(async () => {
         ],
         parent: document.getElementById('output-editor')
     });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            cancel();
+        }
+    })
 })
 
 // Add watcher for output
@@ -95,7 +101,7 @@ async function cancel() {
                     Play
                 </button>
                 <button @click="cancel"
-                    class="py-1 px-4 bg-rose-500 hover:bg-rose-700 rounded shadow text-slate-800 flex items-center gap-2">
+                    class="py-1 px-4 bg-slate-600 hover:bg-slate-700 rounded shadow text-white flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round"
