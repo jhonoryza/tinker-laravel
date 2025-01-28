@@ -1,0 +1,16 @@
+{
+    "$schema": "../gen/schemas/desktop-schema.json",
+    "identifier": "artisan",
+    "description": "Capability for the artisan window",
+    "windows": [
+        "artisan"
+    ],
+    "permissions": [
+        "core:default",
+        "opener:default",
+        "dialog:default",
+        "core:webview:allow-create-webview-window",
+        "store:default",
+        "core:window:allow-close"
+    ]
+}
