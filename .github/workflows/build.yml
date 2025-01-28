@@ -16,7 +16,7 @@ jobs:
         platform: [macos-latest, ubuntu-latest, windows-latest]
         include:
           - platform: macos-latest
-            targets: universal-apple-darwin
+            targets: 'aarch64-apple-darwin,x86_64-apple-darwin' 
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -49,4 +49,4 @@ jobs:
           releaseBody: 'See the assets to download and install this version.'
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.platform == 'macos-latest' && format('--target {0}', matrix.targets) || '' }}
+          args: ${{ matrix.platform == 'macos-latest' && '--target aarch64-apple-darwin --target x86_64-apple-darwin' || '' }}
