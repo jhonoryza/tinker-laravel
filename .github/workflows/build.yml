@@ -1,6 +1,8 @@
 name: Build
 on:
   push:
+    branches:
+      - dev
     tags:
       - 'v*'
   workflow_dispatch:
@@ -13,10 +15,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-latest, windows-latest]
-        include:
-          - platform: macos-latest
-            targets: aarch64-apple-darwin,x86_64-apple-darwin
+        # platform: [macos-latest, ubuntu-latest, windows-latest]
+        platform: [ubuntu-latest]
+        # include:
+        #   - platform: macos-latest
+        #     targets: aarch64-apple-darwin,x86_64-apple-darwin
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -48,6 +51,8 @@ jobs:
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
             export PATH=\"/root/.cargo/bin:\$PATH\" && \ 
             cd src-tauri && \
+            mkdir -p target/release && \
+            chmod -R 777 target && \
             cargo build --release --target x86_64-unknown-linux-gnu"
 
       - name: Install dependencies (ubuntu only)
