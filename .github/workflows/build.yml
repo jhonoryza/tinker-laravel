@@ -70,6 +70,12 @@ jobs:
       - name: Install frontend dependencies
         run: bun install
 
+      - name: Setup build permissions
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo mkdir -p src-tauri/target/release
+          sudo chmod -R 777 src-tauri/target
+
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
         env:
