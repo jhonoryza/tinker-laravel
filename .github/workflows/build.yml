@@ -1,8 +1,8 @@
 name: Build
 on:
   push:
-    branches:
-      - dev
+    # branches:
+    #   - dev
     tags:
       - 'v*'
   workflow_dispatch:
@@ -15,11 +15,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # platform: [macos-latest, ubuntu-latest, windows-latest]
-        platform: [ubuntu-latest]
-        # include:
-        #   - platform: macos-latest
-        #     targets: aarch64-apple-darwin,x86_64-apple-darwin
+        platform: [macos-latest, ubuntu-latest, windows-latest]
+        # platform: [ubuntu-latest]
+        include:
+          - platform: macos-latest
+            targets: aarch64-apple-darwin,x86_64-apple-darwin
 
     runs-on: ${{ matrix.platform }}
     steps:
