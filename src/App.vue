@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { invoke } from "@tauri-apps/api/core";
+import { getVersion } from "@tauri-apps/api/app";
 import { EditorView, basicSetup } from 'codemirror';
 import { php } from '@codemirror/lang-php';
 import { StreamLanguage } from '@codemirror/language';
@@ -137,11 +138,15 @@ async function openSettingsWindow() {
 }
 
 async function showHelp() {
+  const version = await getVersion();
   await message(
-    `
+    `version: ${version}
+
+    Copyright © 2025 Labkita. All rights reserved.
+
 • Cmd/Ctrl + Enter: Play
 • Esc: Close Window`,
-    { title: 'Help', type: 'info' }
+    { title: 'Tinker Laravel', type: 'info' }
   );
 }
 
