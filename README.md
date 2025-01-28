@@ -1,21 +1,39 @@
 # Tinker Laravel Desktop App
 
-this is an app for tinker laravel, you can run your laravel code from this desktop app
+This is a desktop app for tinker in laravel
+
+Run your Laravel code directly from this desktop application
 
 ## Features
-- select php path
-- select laravel directory
-- run your code like in tinker
-- run your artisan command
 
-built using:
+- run custom code like in tinker
+- run artisan command
+- custom laravel directory
+- custom php path
 
-- tauri
-- rust
-- vue
-- vite
+## Built with:
+
+- tauri v2
+- rust v1.77.2
+- nodejs v18
+- vue v3
+- vite v6
+- tailwindcss v3
+
+## Screenshots
+
+![1](./docs/1.png)
+![2](./docs/2.png)
+![3](./docs/3.png)
+![4](./docs/4.png)
 
 ## Development
+
+install bun
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
 
 ```bash
 bun install
@@ -31,8 +49,13 @@ bun tauri dev
 bun tauri build
 ```
 
-check `target` folder for the build binary
+check `src-tauri/target` folder for the build binary
+
+## Security
+
+If you discover any security related issues, please create an issue.
 
 ## License
 
-MIT
+The MIT License (MIT). Please see [License File](LICENSE.md) for more
+information.
