@@ -21,15 +21,21 @@ pub fn execute_laravel_code(code: String, laravel_path: String, bin: String) -> 
 
     match output.stdin.unwrap().write_all(code.as_bytes()) {
         Ok(r) => r,
-        Err(e) => panic!("Error: {}", e),
+        Err(e) => panic!("Error stdin: {}", e),
     }
 
     let mut result: String = String::new();
 
     match output.stdout.unwrap().read_to_string(&mut result) {
         Ok(_) => (),
-        Err(e) => panic!("Error: {}", e),
+        Err(e) => panic!("Error stdout: {}", e),
     }
+
+    match output.stderr.unwrap().read_to_string(&mut result) {
+		Err(why) => panic!("Error stderr: {}", why),
+		Ok(_) => (),
+	}
+
     return result;
 }
 
@@ -45,11 +51,22 @@ pub fn run_artisan_command(command: String, laravel_path: String, bin: String) -
         .spawn()
         .expect("Failed to execute Artisan command");
 
+    match output.stdin.unwrap().write_all(command.as_bytes()) {
+        Ok(r) => r,
+        Err(e) => panic!("Error stdin: {}", e),
+    }
+
     let mut result: String = String::new();
 
     match output.stdout.unwrap().read_to_string(&mut result) {
         Ok(_) => (),
         Err(e) => panic!("Error: {}", e),
     }
+
+    match output.stderr.unwrap().read_to_string(&mut result) {
+		Err(why) => panic!("Error stderr: {}", why),
+		Ok(_) => (),
+	}
+
     return result;
 }

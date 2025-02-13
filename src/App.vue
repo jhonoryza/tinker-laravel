@@ -1,23 +1,26 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { invoke } from "@tauri-apps/api/core";
 import { getVersion } from "@tauri-apps/api/app";
 import { EditorView, basicSetup } from 'codemirror';
 import { php } from '@codemirror/lang-php';
-import { StreamLanguage } from '@codemirror/language';
-import { shell } from '@codemirror/legacy-modes/mode/shell';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { keymap } from '@codemirror/view';
 import { indentWithTab } from '@codemirror/commands';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { getStore, load } from '@tauri-apps/plugin-store';
 import { message } from "@tauri-apps/plugin-dialog";
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-okaidia.min.css';
+import 'prismjs/components/prism-php';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-markup-templating';
 
 const layout = ref("");
 const phpPath = ref("");
 const laravelPath = ref("");
 const code = ref("");
-const output = ref('');
+const outputs = ref([]);
 let outputEditor = null;
 
 onMounted(async () => {
@@ -26,7 +29,7 @@ onMounted(async () => {
   phpPath.value = await store.get('phpPath');
   laravelPath.value = await store.get('laravelPath');
   code.value = await store.get('code') || 'time();';
-  output.value = await store.get('output') || '';
+  outputs.value = await store.get('outputs') || [];
 
   new EditorView({
     doc: code.value,
@@ -58,41 +61,26 @@ onMounted(async () => {
     parent: document.getElementById('code-editor')
   });
 
-  outputEditor = new EditorView({
-    doc: output.value,
-    extensions: [
-      basicSetup,
-      StreamLanguage.define(shell),
-      oneDark,
-      EditorView.editable.of(false)
-    ],
-    parent: document.getElementById('output-editor')
-  });
-});
-
-// Add watcher for output
-watch(output, (newValue) => {
-  if (outputEditor) {
-    outputEditor.dispatch({
-      changes: {
-        from: 0,
-        to: outputEditor.state.doc.length,
-        insert: newValue
-      }
-    });
-  }
+  await nextTick();
+  Prism.highlightAll();
 });
 
 async function runLaravelCode() {
   try {
-    output.value = await invoke('execute_laravel_code', {
+    const message = await invoke('execute_laravel_code', {
       code: code.value,
       laravelPath: laravelPath.value,
       bin: phpPath.value,
     });
+    outputs.value.push(message);
+    outputs.value.reverse();
+
     await saveCodeHistory();
+
+    await nextTick();
+    Prism.highlightAll();
   } catch (error) {
-    output.value = `Error: ${error}`;
+    outputs.value.push(`Error: ${error}`);
     await saveCodeHistory();
   }
 }
@@ -101,7 +89,7 @@ async function saveCodeHistory() {
   const store = await getStore('store.json');
   await store.set('code', code.value);
   await store.save();
-  await store.set('output', output.value);
+  await store.set('outputs', outputs.value);
   await store.save();
 }
 
@@ -110,8 +98,8 @@ async function openArtisanWindow() {
     url: 'artisan.html',
     title: 'Artisan',
     label: 'artisan',
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 1000,
     resizable: true,
     fullscreen: false,
     focus: true
@@ -148,6 +136,11 @@ async function showHelp() {
 • Esc: Close Window`,
     { title: 'Tinker Laravel', type: 'info' }
   );
+}
+
+function clearOutputs() {
+  outputs.value = [];
+  saveCodeHistory();
 }
 
 </script>
@@ -191,11 +184,27 @@ async function showHelp() {
               d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
           </svg>
         </button>
+        <button @click="clearOutputs"
+          class="py-1 px-4 bg-slate-600 hover:bg-slate-700 rounded shadow text-white flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          Clear
+        </button>
       </div>
     </div>
-    <div :class="`flex ${layout === 'Vertical' ? 'flex-row' : 'flex-col'} w-full h-full overflow-scroll`">
-      <div id="code-editor" class="h-full w-full"></div>
-      <div id="output-editor" class="h-full w-full"></div>
+    <div :class="`w-screen h-screen flex ${layout === 'Vertical' ? 'flex-row' : 'flex-col'} gap-2 p-2 overflow-scroll`">
+      <div id="code-editor" :class="`${layout === 'Vertical' ? 'w-1/2' : 'h-1/2'} bg-lime-500 p-2 shadow-3xl rounded`">
+      </div>
+      <div
+        :class="`${layout === 'Vertical' ? 'w-1/2' : 'h-1/2'} flex flex-col overflow-scroll bg-lime-500 p-2 shadow-3xl rounded`">
+        <div class="" v-for="output in outputs">
+          <pre class="language-bash">
+          <code>{{ output }}</code>
+        </pre>
+        </div>
+      </div>
     </div>
     <div class="flex justify-between px-4">
       <p class="text-white">Directory: {{ laravelPath }}</p>
