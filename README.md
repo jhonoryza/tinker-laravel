@@ -6,7 +6,7 @@ Run your Laravel code directly from this desktop application
 
 ## Features
 
-- run custom code like in tinker
+- run custom code like in `artisan tinker`
 - run artisan command
 - custom laravel directory
 - custom php path
@@ -22,10 +22,7 @@ Run your Laravel code directly from this desktop application
 
 ## Screenshots
 
-![1](./docs/1.png)
-![2](./docs/2.png)
-![3](./docs/3.png)
-![4](./docs/4.png)
+![1](./docs/1.png) ![2](./docs/2.png) ![3](./docs/3.png) ![4](./docs/4.png)
 
 ## Development
 
