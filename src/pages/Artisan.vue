@@ -1,18 +1,18 @@
 <script setup>
-import { StreamLanguage } from "@codemirror/language";
-import { shell } from "@codemirror/legacy-modes/mode/shell";
-import { oneDark } from "@codemirror/theme-one-dark";
 import { invoke } from "@tauri-apps/api/core";
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { getStore } from '@tauri-apps/plugin-store';
-import { basicSetup, EditorView } from "codemirror";
-import { onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-tomorrow.min.css';
+import 'prismjs/components/prism-php';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-markup-templating';
 
 const artisanCommand = ref("");
 const phpPath = ref("");
 const laravelPath = ref("");
 const output = ref('');
-let outputEditor = null;
 
 onMounted(async () => {
     const store = await getStore('store.json');
@@ -21,36 +21,15 @@ onMounted(async () => {
     laravelPath.value = await store.get('laravelPath');
     output.value = await store.get('outputArtisan') || '';
 
-    outputEditor = new EditorView({
-        doc: output.value,
-        extensions: [
-            basicSetup,
-            StreamLanguage.define(shell),
-            oneDark,
-            EditorView.editable.of(false)
-        ],
-        parent: document.getElementById('output-editor')
-    });
-
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             cancel();
         }
     })
-})
 
-// Add watcher for output
-watch(output, (newValue) => {
-    if (outputEditor) {
-        outputEditor.dispatch({
-            changes: {
-                from: 0,
-                to: outputEditor.state.doc.length,
-                insert: newValue
-            }
-        });
-    }
-});
+    await nextTick();
+    Prism.highlightAll();
+})
 
 async function runArtisanCommand() {
     try {
@@ -60,6 +39,8 @@ async function runArtisanCommand() {
             bin: phpPath.value,
         });
         await saveArtisanHistory();
+        await nextTick();
+        Prism.highlightAll();
     } catch (error) {
         output.value = `Error: ${error}`;
         await saveArtisanHistory();
@@ -83,7 +64,7 @@ async function cancel() {
 
 <template>
 
-    <div class="font-sans h-screen flex flex-col space-y-0 overflow-hidden bg-slate-800 px-4">
+    <div class="font-sans h-screen flex flex-col justify-between gap-2 bg-slate-800 px-4">
         <h1 class="text-2xl text-white font-bold">Artisan Command</h1>
 
         <div class="space-y-2 flex flex-col justify-start items-start">
@@ -111,12 +92,14 @@ async function cancel() {
                 </button>
             </div>
         </div>
-        <div class="flex w-full h-full overflow-scroll">
-            <div id="output-editor" class="h-full w-full"></div>
+        <div class="flex grow overflow-auto">
+            <pre class="border-4 border-lime-500 p-4 language-bash w-screen rounded shadow">
+                    <code>{{ output }}</code>
+                </pre>
         </div>
-        <div class="flex justify-between px-4">
-            <p class="text-white">Directory: {{ laravelPath }}</p>
-            <p class="text-white">PHP Path: {{ phpPath }}</p>
+        <div class="flex justify-between px-4 py-2 text-xs text-white">
+            <p class="">Directory: {{ laravelPath }}</p>
+            <p class="">PHP Path: {{ phpPath }}</p>
         </div>
     </div>
 </template>

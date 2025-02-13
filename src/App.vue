@@ -21,7 +21,6 @@ const phpPath = ref("");
 const laravelPath = ref("");
 const code = ref("");
 const outputs = ref([]);
-let outputEditor = null;
 
 onMounted(async () => {
   const store = await load('store.json', { autoSave: false });
@@ -146,8 +145,8 @@ function clearOutputs() {
 </script>
 
 <template>
-  <div class="font-sans h-screen flex flex-col space-y-0 overflow-hidden bg-slate-800">
-    <div class="text-slate-100 p-2 flex flex-col space-y-2">
+  <div class="font-sans h-screen flex flex-col justify-between bg-slate-800">
+    <div class="p-2 flex flex-col space-y-2">
       <div class="flex space-x-2">
         <button class="py-1 px-4 bg-lime-400 hover:bg-lime-600 rounded shadow text-slate-800 flex items-center gap-2"
           @click="runLaravelCode">
@@ -194,21 +193,23 @@ function clearOutputs() {
         </button>
       </div>
     </div>
-    <div :class="`w-screen h-screen flex ${layout === 'Vertical' ? 'flex-row' : 'flex-col'} gap-2 p-2 overflow-scroll`">
-      <div id="code-editor" :class="`${layout === 'Vertical' ? 'w-1/2' : 'h-1/2'} bg-lime-500 p-2 shadow-3xl rounded`">
+    <div :class="`flex grow ${layout === 'Vertical' ? 'flex-row' : 'flex-col'} gap-2 p-2 overflow-auto`">
+      <div id="code-editor"
+        :class="`${layout === 'Vertical' ? 'w-1/2' : 'h-1/2'} border-4 border-lime-500 bg-slate-800 p-2 shadow-3xl rounded overflow-auto text-lg`">
       </div>
+      <h1 :class="`text-sm text-white ${layout === 'Vertical' ? 'hidden' : 'block'}`">Output:</h1>
       <div
-        :class="`${layout === 'Vertical' ? 'w-1/2' : 'h-1/2'} flex flex-col overflow-scroll bg-lime-500 p-2 shadow-3xl rounded`">
+        :class="`${layout === 'Vertical' ? 'w-1/2' : 'h-1/2'} flex flex-col overflow-auto bg-slate-800 shadow-3xl rounded`">
         <div class="" v-for="output in outputs">
-          <pre class="language-bash">
+          <pre class="border-4 border-lime-500 py-0 px-4 language-bash">
           <code>{{ output }}</code>
         </pre>
         </div>
       </div>
     </div>
-    <div class="flex justify-between px-4">
-      <p class="text-white">Directory: {{ laravelPath }}</p>
-      <p class="text-white">PHP Path: {{ phpPath }}</p>
+    <div class="flex justify-between pb-2 px-4 text-xs text-white">
+      <p class="">Directory: {{ laravelPath }}</p>
+      <p class="">PHP Path: {{ phpPath }}</p>
     </div>
   </div>
 </template>
